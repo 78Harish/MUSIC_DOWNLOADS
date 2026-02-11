@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Magic Music Launchpad VR</title>
+<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+<script>
+AFRAME.registerComponent('launchpad-button', {
+  schema: {
+    track: { type: 'selector' },
+    video: { type: 'selector' },
+    color: { type: 'string' },
+    genre: { type: 'string' }
+  },
+
+  init: function () {
+    const el = this.el;
+    const data = this.data;
+    const sky = document.querySelector('#main-bg');
+
+    // Hover effect
+    el.addEventListener('mouseenter', () => {
+      el.setAttribute('scale', '1.1 1.1 1.1');
+    });
+
+    el.addEventListener('mouseleave', () => {
+      el.setAttribute('scale', '1 1 1');
+    });
+
+    el.addEventListener('click', function () {
+
+      // Stop all audio
+      document.querySelectorAll('audio').forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+      });
+
+      // Stop all videos
+      document.querySelectorAll('video').forEach(v => {
+        v.pause();
+        v.currentTime = 0;
+      });
+
+      // Play selected audio
+      if (data.track) data.track.play();
+
+      // Play selected video
+      if (data.video) {
+        sky.setAttribute('material', {
+          src: data.video,
+          side: 'back'
+        });
+        data.video.play();
+      }
+
+      // Reset glow
+      document.querySelectorAll('.pad-btn').forEach(btn => {
+        btn.setAttribute('material', 'emissive', '#000');
+        btn.setAttribute('material', 'emissiveIntensity', 0);
+      });
+
+      // Highlight selected
+      el.setAttribute('material', 'emissive', data.color);
+      el.setAttribute('material', 'emissiveIntensity', 0.8);
+
+      console.log("Now playing:", data.genre);
+    });
+  }
+});
+</script>
+</head>
+
+<body>
+<a-scene cursor="rayOrigin: mouse">
+
+<a-assets>
+
+<!-- AUDIO -->
+<audio id="a1" src="https://cdn.pixabay.com/download/audio/2021/08/09/audio_88447a869f.mp3" crossorigin="anonymous"></audio>
+<audio id="a2" src="https://cdn.pixabay.com/download/audio/2022/01/26/audio_d0c6ff1101.mp3" crossorigin="anonymous"></audio>
+<audio id="a3" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_276a7e0256.mp3" crossorigin="anonymous"></audio>
+<audio id="a4" src="https://cdn.pixabay.com/download/audio/2021/11/23/audio_0ed053c461.mp3" crossorigin="anonymous"></audio>
+<audio id="a5" src="https://cdn.pixabay.com/download/audio/2022/10/25/audio_1899130764.mp3" crossorigin="anonymous"></audio>
+<audio id="a6" src="https://cdn.jsdelivr.net/gh/78Harish/MUSIC_DOWNLOADS/laugh.mp3" crossorigin="anonymous"></audio>
+
+<!-- VIDEOS -->
+<video id="v1" src="https://cdn.aframe.io/videos/bunny.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+<video id="v2" src="https://cdn.jsdelivr.net/gh/78Harish/MUSIC_DOWNLOADS/3987730-sd_426_240_24fps.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+<video id="v3" src="https://cdn.aframe.io/videos/bunny.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+<video id="v4" src="https://cdn.aframe.io/videos/360-video-nyc.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+<video id="v5" src="https://cdn.aframe.io/videos/bunny.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+<video id="v6" src="https://cdn.aframe.io/videos/360-video-nyc.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+
+</a-assets>
+
+<!-- SKY -->
+<a-sky id="main-bg" src="#v1"></a-sky>
+
+<!-- LAUNCHPAD -->
+<a-entity position="0 1.2 -2" rotation="-30 0 0">
+
+  <!-- Title -->
+  <a-text value="MAGIC LAUNCHPAD"
+          align="center"
+          color="#FFD700"
+          width="6"
+          position="0 1.4 0.3"
+          material="emissive: #FFD700; emissiveIntensity: 0.7">
+  </a-text>
+
+  <!-- Background Panel -->
+  <a-box width="3.8" height="2.8" depth="0.15" color="#1a1a1a"></a-box>
+
+  <!-- ROW 1 -->
+  <a-box class="pad-btn"
+         launchpad-button="track: #a1; video: #v1; color: #FF0000; genre: Mode 1"
+         position="-1.3 0.7 0.25"
+         width="0.7" height="0.5" depth="0.2"
+         color="#FF0000"></a-box>
+
+  <a-box class="pad-btn"
+         launchpad-button="track: #a2; video: #v2; color: #00FF00; genre: Mode 2"
+         position="0 0.7 0.25"
+         width="0.7" height="0.5" depth="0.2"
+         color="#00FF00"></a-box>
+
+  <a-box class="pad-btn"
+         launchpad-button="track: #a3; video: #v3; color: #0000FF; genre: Mode 3"
+         position="1.3 0.7 0.25"
+         width="0.7" height="0.5" depth="0.2"
+         color="#0000FF"></a-box>
+
+  <!-- ROW 2 -->
+  <a-box class="pad-btn"
+         launchpad-button="track: #a4; video: #v4; color: #FF00FF; genre: Mode 4"
+         position="-1.3 -0.7 0.25"
+         width="0.7" height="0.5" depth="0.2"
+         color="#FF00FF"></a-box>
+
+  <a-box class="pad-btn"
+         launchpad-button="track: #a5; video: #v5; color: #00FFFF; genre: Mode 5"
+         position="0 -0.7 0.25"
+         width="0.7" height="0.5" depth="0.2"
+         color="#00FFFF"></a-box>
+
+  <a-box class="pad-btn"
+         launchpad-button="track: #a6; video: #v6; color: #F1C40F; genre: Mode 6"
+         position="1.3 -0.7 0.25"
+         width="0.7" height="0.5" depth="0.2"
+         color="#F1C40F"></a-box>
+
+</a-entity>
+
+<a-camera position="0 1.6 0">
+  <a-cursor color="white"></a-cursor>
+</a-camera>
+
+</a-scene>
+</body>
+</html>
